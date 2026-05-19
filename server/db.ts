@@ -1,5 +1,6 @@
 import { and, desc, eq, inArray, isNull } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import {
   InsertUser,
   users,
@@ -35,15 +36,24 @@ import {
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let _pgClient: ReturnType<typeof postgres> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
+// Postgres-js options tuned for Supabase: `prepare: false` is required when
+// going through Supabase's pgbouncer pooler (transaction mode), which doesn't
+// support prepared statements. Safe to leave on for direct connections too.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      _pgClient = postgres(process.env.DATABASE_URL, {
+        prepare: false,
+        max: 10,
+      });
+      _db = drizzle(_pgClient);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
+      _pgClient = null;
     }
   }
   return _db;
@@ -246,9 +256,14 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       updateSet.lastSignedIn = new Date();
     }
 
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
-      set: updateSet,
-    });
+    // Postgres: ON CONFLICT (openId) DO UPDATE SET ...
+    await db
+      .insert(users)
+      .values(values)
+      .onConflictDoUpdate({
+        target: users.openId,
+        set: updateSet,
+      });
   } catch (error) {
     console.error("[Database] Failed to upsert user:", error);
     throw error;
@@ -458,7 +473,10 @@ export async function upsertWorkerProfile(userId: number, data: Partial<InsertWo
   await db
     .insert(workerProfiles)
     .values({ userId, ...cleaned } as InsertWorkerProfile)
-    .onDuplicateKeyUpdate({ set: cleaned });
+    .onConflictDoUpdate({
+      target: workerProfiles.userId,
+      set: cleaned,
+    });
   return getWorkerProfile(userId);
 }
 
@@ -518,7 +536,10 @@ export async function upsertClientProfile(userId: number, data: Partial<InsertCl
   await db
     .insert(clientProfiles)
     .values({ userId, ...cleaned } as InsertClientProfile)
-    .onDuplicateKeyUpdate({ set: cleaned });
+    .onConflictDoUpdate({
+      target: clientProfiles.userId,
+      set: cleaned,
+    });
   return getClientProfile(userId);
 }
 

@@ -1,31 +1,125 @@
 import {
-  int,
-  mysqlEnum,
-  mysqlTable,
+  boolean,
+  doublePrecision,
+  integer,
+  jsonb,
+  numeric,
+  pgEnum,
+  pgTable,
+  serial,
   text,
   timestamp,
   varchar,
-  decimal,
-  json,
-  boolean,
-  datetime,
-  float,
-} from "drizzle-orm/mysql-core";
+} from "drizzle-orm/pg-core";
+
+// =============================================================================
+// Enums — Postgres exige cada enum como um tipo nomeado separado, então elas
+// vivem no topo do arquivo e são referenciadas pelas colunas abaixo.
+// =============================================================================
+
+export const userRoleEnum = pgEnum("user_role", [
+  "user",
+  "client",
+  "worker",
+  "admin",
+]);
+
+export const subscriptionPlanEnum = pgEnum("subscription_plan", [
+  "basic",
+  "premium",
+  "enterprise",
+]);
+
+export const timeSlotEnum = pgEnum("time_slot", [
+  "morning",
+  "afternoon",
+  "evening",
+  "night",
+]);
+
+export const urgencyLevelEnum = pgEnum("urgency_level", [
+  "low",
+  "medium",
+  "high",
+  "critical",
+]);
+
+export const serviceStatusEnum = pgEnum("service_status", [
+  "requested",
+  "accepted",
+  "in_progress",
+  "completed",
+  "cancelled",
+]);
+
+export const planChosenEnum = pgEnum("plan_chosen", [
+  "basico",
+  "pro",
+  "premiere",
+]);
+
+export const referralStatusEnum = pgEnum("referral_status", [
+  "pending",
+  "active",
+  "paid",
+  "cancelled",
+]);
+
+export const disputeSeverityEnum = pgEnum("dispute_severity", [
+  "low",
+  "medium",
+  "high",
+  "critical",
+]);
+
+export const disputeStatusEnum = pgEnum("dispute_status", [
+  "open",
+  "resolved",
+  "dismissed",
+]);
+
+export const notificationTypeEnum = pgEnum("notification_type", [
+  "new_request_match",
+  "request_accepted",
+  "request_in_progress",
+  "request_completed",
+  "request_cancelled_by_client",
+  "worker_dropped",
+  "review_received",
+  "referral_active",
+  "referral_paid",
+  "dispute_opened",
+  "dispute_resolved",
+]);
+
+export const serviceHistoryRoleEnum = pgEnum("service_history_role", [
+  "client",
+  "worker",
+]);
+
+// =============================================================================
+// Tables
+// =============================================================================
 
 /**
  * Core user table backing auth flow.
  * Extended with role field for client/worker distinction.
  */
-export const users = mysqlTable("users", {
-  id: int("id").autoincrement().primaryKey(),
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "client", "worker", "admin"]).default("user").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  role: userRoleEnum("role").default("user").notNull(),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  lastSignedIn: timestamp("lastSignedIn", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 export type User = typeof users.$inferSelect;
@@ -34,12 +128,12 @@ export type InsertUser = typeof users.$inferInsert;
 /**
  * Specialties catalog
  */
-export const specialties = mysqlTable("specialties", {
-  id: int("id").autoincrement().primaryKey(),
+export const specialties = pgTable("specialties", {
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull().unique(),
   description: text("description"),
   icon_url: text("icon_url"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type Specialty = typeof specialties.$inferSelect;
@@ -58,25 +152,29 @@ export type InsertSpecialty = typeof specialties.$inferInsert;
  * `professionArea` is a free-text label (e.g. "Cozinha", "Atendimento",
  * "Padaria") used alongside specialties to help logistas browse CVs.
  */
-export const workerProfiles = mysqlTable("worker_profiles", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().unique(),
+export const workerProfiles = pgTable("worker_profiles", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull().unique(),
   photoUrl: text("photoUrl"),
   bio: text("bio"),
-  specialties: json("specialties").$type<number[]>().default([]),
+  // Postgres jsonb is faster + indexed-friendly compared to plain json.
+  specialties: jsonb("specialties").$type<number[]>().default([]),
   city: varchar("city", { length: 100 }),
-  latitude: float("latitude"),
-  longitude: float("longitude"),
-  hourlyRate: decimal("hourlyRate", { precision: 10, scale: 2 }),
-  rating: float("rating").default(0),
-  totalReviews: int("totalReviews").default(0),
+  latitude: doublePrecision("latitude"),
+  longitude: doublePrecision("longitude"),
+  hourlyRate: numeric("hourlyRate", { precision: 10, scale: 2 }),
+  rating: doublePrecision("rating").default(0),
+  totalReviews: integer("totalReviews").default(0),
   isActive: boolean("isActive").default(true),
   acceptsFreela: boolean("acceptsFreela").default(true),
   acceptsDiaria: boolean("acceptsDiaria").default(true),
   acceptsFixa: boolean("acceptsFixa").default(false),
   professionArea: varchar("professionArea", { length: 200 }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export type WorkerProfile = typeof workerProfiles.$inferSelect;
@@ -85,20 +183,23 @@ export type InsertWorkerProfile = typeof workerProfiles.$inferInsert;
 /**
  * Client profiles
  */
-export const clientProfiles = mysqlTable("client_profiles", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().unique(),
+export const clientProfiles = pgTable("client_profiles", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull().unique(),
   companyName: varchar("companyName", { length: 200 }).notNull(),
   phone: varchar("phone", { length: 20 }),
   city: varchar("city", { length: 100 }),
-  latitude: float("latitude"),
-  longitude: float("longitude"),
-  rating: float("rating").default(0),
-  totalReviews: int("totalReviews").default(0),
-  subscriptionPlan: mysqlEnum("subscriptionPlan", ["basic", "premium", "enterprise"]).default("basic"),
-  subscriptionExpiresAt: timestamp("subscriptionExpiresAt"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  latitude: doublePrecision("latitude"),
+  longitude: doublePrecision("longitude"),
+  rating: doublePrecision("rating").default(0),
+  totalReviews: integer("totalReviews").default(0),
+  subscriptionPlan: subscriptionPlanEnum("subscriptionPlan").default("basic"),
+  subscriptionExpiresAt: timestamp("subscriptionExpiresAt", { withTimezone: true }),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export type ClientProfile = typeof clientProfiles.$inferSelect;
@@ -107,13 +208,16 @@ export type InsertClientProfile = typeof clientProfiles.$inferInsert;
 /**
  * Worker availability (dynamic)
  */
-export const availability = mysqlTable("availability", {
-  id: int("id").autoincrement().primaryKey(),
-  workerId: int("workerId").notNull(),
-  date: datetime("date").notNull(),
-  timeSlot: mysqlEnum("timeSlot", ["morning", "afternoon", "evening", "night"]),
+export const availability = pgTable("availability", {
+  id: serial("id").primaryKey(),
+  workerId: integer("workerId").notNull(),
+  date: timestamp("date", { withTimezone: true }).notNull(),
+  timeSlot: timeSlotEnum("timeSlot"),
   isAvailable: boolean("isAvailable").default(true),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export type Availability = typeof availability.$inferSelect;
@@ -122,26 +226,26 @@ export type InsertAvailability = typeof availability.$inferInsert;
 /**
  * Service requests
  */
-export const serviceRequests = mysqlTable("service_requests", {
-  id: int("id").autoincrement().primaryKey(),
-  clientId: int("clientId").notNull(),
-  workerId: int("workerId"),
-  specialtyId: int("specialtyId").notNull(),
+export const serviceRequests = pgTable("service_requests", {
+  id: serial("id").primaryKey(),
+  clientId: integer("clientId").notNull(),
+  workerId: integer("workerId"),
+  specialtyId: integer("specialtyId").notNull(),
   title: varchar("title", { length: 200 }).notNull(),
   description: text("description"),
-  urgencyLevel: mysqlEnum("urgencyLevel", ["low", "medium", "high", "critical"]).default("medium"),
-  status: mysqlEnum("status", ["requested", "accepted", "in_progress", "completed", "cancelled"]).default("requested"),
-  scheduledDate: datetime("scheduledDate"),
+  urgencyLevel: urgencyLevelEnum("urgencyLevel").default("medium"),
+  status: serviceStatusEnum("status").default("requested"),
+  scheduledDate: timestamp("scheduledDate", { withTimezone: true }),
   scheduledTime: varchar("scheduledTime", { length: 10 }),
-  locationLatitude: float("locationLatitude"),
-  locationLongitude: float("locationLongitude"),
-  estimatedDurationMinutes: int("estimatedDurationMinutes"),
-  proposedPrice: decimal("proposedPrice", { precision: 10, scale: 2 }),
-  finalPrice: decimal("finalPrice", { precision: 10, scale: 2 }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  acceptedAt: timestamp("acceptedAt"),
-  startedAt: timestamp("startedAt"),
-  completedAt: timestamp("completedAt"),
+  locationLatitude: doublePrecision("locationLatitude"),
+  locationLongitude: doublePrecision("locationLongitude"),
+  estimatedDurationMinutes: integer("estimatedDurationMinutes"),
+  proposedPrice: numeric("proposedPrice", { precision: 10, scale: 2 }),
+  finalPrice: numeric("finalPrice", { precision: 10, scale: 2 }),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
+  acceptedAt: timestamp("acceptedAt", { withTimezone: true }),
+  startedAt: timestamp("startedAt", { withTimezone: true }),
+  completedAt: timestamp("completedAt", { withTimezone: true }),
 });
 
 export type ServiceRequest = typeof serviceRequests.$inferSelect;
@@ -150,14 +254,14 @@ export type InsertServiceRequest = typeof serviceRequests.$inferInsert;
 /**
  * Reviews and ratings
  */
-export const reviews = mysqlTable("reviews", {
-  id: int("id").autoincrement().primaryKey(),
-  serviceRequestId: int("serviceRequestId").notNull(),
-  reviewerId: int("reviewerId").notNull(),
-  reviewedUserId: int("reviewedUserId").notNull(),
-  rating: int("rating").notNull(),
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  serviceRequestId: integer("serviceRequestId").notNull(),
+  reviewerId: integer("reviewerId").notNull(),
+  reviewedUserId: integer("reviewedUserId").notNull(),
+  rating: integer("rating").notNull(),
   comment: text("comment"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type Review = typeof reviews.$inferSelect;
@@ -173,21 +277,21 @@ export type InsertReview = typeof reviews.$inferInsert;
  *           → `paid`   (first month invoiced; commission released to trampista)
  *           → `cancelled` (logista cancelled before first payment)
  */
-export const referrals = mysqlTable("referrals", {
-  id: int("id").autoincrement().primaryKey(),
+export const referrals = pgTable("referrals", {
+  id: serial("id").primaryKey(),
   // The trampista who brought in the deal (users.id).
-  trampistaUserId: int("trampistaUserId").notNull(),
+  trampistaUserId: integer("trampistaUserId").notNull(),
   // Optional — set once the logista has a Trampei account.
-  clientUserId: int("clientUserId"),
+  clientUserId: integer("clientUserId"),
   clientCompanyName: varchar("clientCompanyName", { length: 200 }).notNull(),
   clientContact: varchar("clientContact", { length: 200 }),
-  planChosen: mysqlEnum("planChosen", ["basico", "pro", "premiere"]).default("basico"),
-  firstPaymentAmount: decimal("firstPaymentAmount", { precision: 10, scale: 2 }),
-  status: mysqlEnum("status", ["pending", "active", "paid", "cancelled"]).default("pending"),
+  planChosen: planChosenEnum("planChosen").default("basico"),
+  firstPaymentAmount: numeric("firstPaymentAmount", { precision: 10, scale: 2 }),
+  status: referralStatusEnum("status").default("pending"),
   notes: text("notes"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  activatedAt: timestamp("activatedAt"),
-  paidAt: timestamp("paidAt"),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
+  activatedAt: timestamp("activatedAt", { withTimezone: true }),
+  paidAt: timestamp("paidAt", { withTimezone: true }),
 });
 
 export type Referral = typeof referrals.$inferSelect;
@@ -200,17 +304,17 @@ export type InsertReferral = typeof referrals.$inferInsert;
  * Severity guides triage urgency: `low` = informativo, `medium` = revisar,
  * `high` = action needed soon, `critical` = bloqueador / fraude possível.
  */
-export const disputes = mysqlTable("disputes", {
-  id: int("id").autoincrement().primaryKey(),
-  serviceRequestId: int("serviceRequestId").notNull(),
-  openedByUserId: int("openedByUserId").notNull(),
+export const disputes = pgTable("disputes", {
+  id: serial("id").primaryKey(),
+  serviceRequestId: integer("serviceRequestId").notNull(),
+  openedByUserId: integer("openedByUserId").notNull(),
   reason: text("reason").notNull(),
-  severity: mysqlEnum("severity", ["low", "medium", "high", "critical"]).default("medium"),
-  status: mysqlEnum("status", ["open", "resolved", "dismissed"]).default("open"),
+  severity: disputeSeverityEnum("severity").default("medium"),
+  status: disputeStatusEnum("status").default("open"),
   resolution: text("resolution"),
-  resolvedByUserId: int("resolvedByUserId"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  resolvedAt: timestamp("resolvedAt"),
+  resolvedByUserId: integer("resolvedByUserId"),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
+  resolvedAt: timestamp("resolvedAt", { withTimezone: true }),
 });
 
 export type Dispute = typeof disputes.$inferSelect;
@@ -221,28 +325,16 @@ export type InsertDispute = typeof disputes.$inferInsert;
  * Emitted server-side from procedure handlers (accept, status change, review,
  * etc). The bell icon in AppLayout polls listMine + countUnread.
  */
-export const notifications = mysqlTable("notifications", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull(),
-  type: mysqlEnum("type", [
-    "new_request_match",     // worker: nova vaga compatível com suas especialidades
-    "request_accepted",      // client: alguém aceitou sua solicitação
-    "request_in_progress",   // client: trampista começou
-    "request_completed",     // client: trampo concluído
-    "request_cancelled_by_client", // worker: cliente cancelou
-    "worker_dropped",        // client: trampista desistiu, vaga voltou pra fila
-    "review_received",       // either: ganhou avaliação
-    "referral_active",       // worker: logista indicado assinou
-    "referral_paid",         // worker: comissão liberada
-    "dispute_opened",        // admin: nova disputa pra revisar
-    "dispute_resolved",      // parties: admin resolveu/dismissou disputa
-  ]).notNull(),
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  type: notificationTypeEnum("type").notNull(),
   title: varchar("title", { length: 200 }).notNull(),
   body: text("body"),
   linkPath: varchar("linkPath", { length: 200 }),
-  relatedId: int("relatedId"),
+  relatedId: integer("relatedId"),
   read: boolean("read").default(false),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type Notification = typeof notifications.$inferSelect;
@@ -251,13 +343,13 @@ export type InsertNotification = typeof notifications.$inferInsert;
 /**
  * Service history (denormalized for performance)
  */
-export const serviceHistory = mysqlTable("service_history", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull(),
-  serviceRequestId: int("serviceRequestId").notNull(),
-  role: mysqlEnum("role", ["client", "worker"]).notNull(),
-  statusAtTime: mysqlEnum("statusAtTime", ["requested", "accepted", "in_progress", "completed", "cancelled"]),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+export const serviceHistory = pgTable("service_history", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  serviceRequestId: integer("serviceRequestId").notNull(),
+  role: serviceHistoryRoleEnum("role").notNull(),
+  statusAtTime: serviceStatusEnum("statusAtTime"),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type ServiceHistory = typeof serviceHistory.$inferSelect;
