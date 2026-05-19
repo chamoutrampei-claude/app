@@ -1,0 +1,51 @@
+# Trampei — local prod-like stack
+# Usage:
+#   docker compose up --build
+#   docker compose exec app pnpm db:push   # run migrations
+# Visit http://localhost:3000
+
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootsecret
+      MYSQL_DATABASE: trampei
+      MYSQL_USER: trampei
+      MYSQL_PASSWORD: trampei
+    ports:
+      - "3306:3306"
+    volumes:
+      - trampei-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootsecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  app:
+    build:
+      context: .
+      args:
+        # VITE_* are baked at build time. Override here or via .env in the
+        # build context if you have a real Manus OAuth portal configured.
+        VITE_OAUTH_PORTAL_URL: ${VITE_OAUTH_PORTAL_URL:-}
+        VITE_APP_ID: ${VITE_APP_ID:-}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: mysql://trampei:trampei@db:3306/trampei
+      OAUTH_SERVER_URL: ${OAUTH_SERVER_URL:-}
+      JWT_SECRET: ${JWT_SECRET:-dev-local-secret-change-me}
+      BUILT_IN_FORGE_API_URL: ${BUILT_IN_FORGE_API_URL:-}
+      BUILT_IN_FORGE_API_KEY: ${BUILT_IN_FORGE_API_KEY:-}
+      NODE_ENV: production
+      PORT: 3000
+
+volumes:
+  trampei-db:

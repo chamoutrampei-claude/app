@@ -1,0 +1,41 @@
+{
+  "name": "TRAMPEI — Trabalho rápido. Gente pronta.",
+  "short_name": "TRAMPEI",
+  "description": "Plataforma do Vale do Paraíba que conecta logistas a trampistas em minutos.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F8F9F5",
+  "theme_color": "#0A3914",
+  "lang": "pt-BR",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nova solicitação",
+      "short_name": "Nova vaga",
+      "description": "Publicar trampo pra trampistas (logista)",
+      "url": "/client/request/new",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Minhas solicitações",
+      "short_name": "Dashboard",
+      "url": "/"
+    }
+  ]
+}

@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TRAMPEI · Trabalho rápido. Gente pronta. — Pré-venda Vale do Paraíba</title>
+  <meta name="description" content="A primeira plataforma do Vale do Paraíba que conecta sua empresa a trabalhadores avulsos em tempo real. Pré-venda com 50% OFF nos 3 primeiros meses." />
+  <link rel="icon" type="image/png" href="logo.png" />
+
+  <!-- Fonts: Bricolage Grotesque (display) + Plus Jakarta Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-darkest': '#0A3914',
+            'brand-dark': '#0E4D1E',
+            'brand': '#1B5E20',
+            'brand-mid': '#2E7D32',
+            'brand-light': '#7CB342',
+            'brand-bright': '#9CCC65',
+            'yellow': '#FFD600',
+            'yellow-soft': '#FFEB3B',
+            'yellow-warm': '#FFC107',
+            'cream': '#F0F4EC',
+            'off': '#F8F9F5',
+            'ink': '#1A2E1F',
+            'ink-mid': '#4A5C4D',
+            'ink-light': '#8A9A8D',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 4px 20px -4px rgba(14, 77, 30, 0.12)',
+            'card-hover': '0 12px 40px -8px rgba(14, 77, 30, 0.20)',
+            'pill': '0 6px 20px -2px rgba(255, 214, 0, 0.40)',
+            'glow-green': '0 0 60px -10px rgba(124, 179, 66, 0.60)',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            marquee: {
+              from: { transform: 'translateX(0)' },
+              to: { transform: 'translateX(-50%)' },
+            },
+            pulseRing: {
+              '0%': { transform: 'scale(0.95)', opacity: '0.6' },
+              '100%': { transform: 'scale(1.7)', opacity: '0' },
+            },
+          },
+          animation: {
+            float: 'float 6s ease-in-out infinite',
+            marquee: 'marquee 30s linear infinite',
+            'pulse-ring': 'pulseRing 2s ease-out infinite',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: #F8F9F5;
+      color: #1A2E1F;
+      font-feature-settings: 'cv02','cv03','cv04','cv11';
+    }
+    h1, h2, h3, h4 { font-family: 'Bricolage Grotesque', system-ui, sans-serif; letter-spacing: -0.02em; }
+
+    /* Brushstroke highlight on key words */
+    .brush {
+      position: relative;
+      display: inline-block;
+      isolation: isolate;
+    }
+    .brush::before {
+      content: '';
+      position: absolute;
+      left: -0.12em;
+      right: -0.12em;
+      top: 30%;
+      bottom: 8%;
+      background: #FFD600;
+      transform: skewX(-4deg);
+      border-radius: 4px;
+      z-index: -1;
+    }
+    .brush-lime::before { background: #7CB342; }
+    .brush-bright::before { background: #9CCC65; }
+
+    /* Grain texture overlay (fractal noise SVG) */
+    .grain { position: relative; }
+    .grain::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.4;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+
+    /* Diagonal stripe pattern (subtle) */
+    .stripes-yellow {
+      background-image: repeating-linear-gradient(135deg,
+        rgba(255,214,0,0.10) 0, rgba(255,214,0,0.10) 1px,
+        transparent 1px, transparent 16px);
+    }
+    .stripes-brand {
+      background-image: repeating-linear-gradient(135deg,
+        rgba(124,179,66,0.10) 0, rgba(124,179,66,0.10) 1px,
+        transparent 1px, transparent 14px);
+    }
+    .stripes-darken {
+      background-image: repeating-linear-gradient(135deg,
+        rgba(10,57,20,0.06) 0, rgba(10,57,20,0.06) 1px,
+        transparent 1px, transparent 18px);
+    }
+
+    /* Pulse ring for "match found" indicator */
+    .pulse-ring { position: relative; }
+    .pulse-ring::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid #FFD600;
+      animation: pulseRing 2s ease-out infinite;
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.6; }
+      100% { transform: scale(1.7); opacity: 0; }
+    }
+
+    /* Reveal on scroll */
+    .reveal, .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(.2,.65,.3,.95), transform 0.7s cubic-bezier(.2,.65,.3,.95);
+    }
+    .reveal.is-visible, .reveal-stagger.is-visible > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Tabular nums for stats */
+    .tabular { font-variant-numeric: tabular-nums; letter-spacing: -0.04em; }
+
+    /* FAQ accordion chevron */
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary .chev { transition: transform 0.3s ease; }
+    details[open] > summary .chev { transform: rotate(180deg); }
+
+    /* Logo fallback if image fails */
+    .logo-fallback {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: #FFD600;
+      color: #0A3914;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Reduced motion: kill translate/float, keep fades */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-stagger > * { transform: none !important; transition-duration: 0.2s !important; }
+      .animate-float, .animate-marquee, .animate-pulse-ring, .pulse-ring::after { animation: none !important; }
+    }
+
+    /* Phone mockup styling */
+    .phone-frame {
+      border-radius: 38px;
+      background: #0A3914;
+      box-shadow: 0 0 0 4px #FFD600, 0 30px 80px -20px rgba(10,57,20,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased text-ink">
+
+  <!-- ===== SEÇÃO 1: BANNER DE ANÚNCIO ===== -->
+  <div class="bg-brand-darkest text-yellow text-center text-xs sm:text-sm py-2.5 px-4 relative z-50">
+    <a href="#pre-venda" class="inline-flex items-center gap-2 hover:text-yellow-soft transition-colors">
+      <span class="relative inline-flex h-2 w-2 mr-1">
+        <span class="absolute inline-flex h-full w-full rounded-full bg-yellow animate-ping opacity-75"></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-yellow"></span>
+      </span>
+      <span class="font-semibold tracking-wide">PRÉ-VENDA ABERTA:</span>
+      <span class="text-cream">50% OFF nos 3 primeiros meses + bônus de fundador.</span>
+      <span class="font-semibold underline underline-offset-2">Garantir minha vaga →</span>
+    </a>
+  </div>
+
+  <!-- ===== SEÇÃO 2: NAV FIXA ===== -->
+  <nav class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-ink/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3">
+        <img src="logo.png" alt="TRAMPEI" class="h-10 w-10 rounded-lg object-cover" onerror="this.outerHTML='<div class=&quot;logo-fallback&quot;>T</div>';" />
+        <span class="font-display font-extrabold text-xl tracking-tight">TRAMPEI</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-ink-mid">
+        <a href="#problema" class="hover:text-ink transition-colors">O problema</a>
+        <a href="#como-funciona" class="hover:text-ink transition-colors">Como funciona</a>
+        <a href="#planos" class="hover:text-ink transition-colors">Planos</a>
+        <a href="#faq" class="hover:text-ink transition-colors">FAQ</a>
+      </div>
+      <a href="#planos" class="inline-flex items-center gap-2 bg-yellow text-brand-darkest font-bold text-sm px-5 py-2.5 rounded-full shadow-pill hover:-translate-y-0.5 transition-transform">
+        Pré-venda <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ===== SEÇÃO 3: HERO ===== -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-brand-darkest via-brand-dark to-brand text-cream grain">
+    <!-- Decorative blobs -->
+    <div aria-hidden="true" class="pointer-events-none absolute -top-32 -left-20 h-96 w-96 rounded-full bg-brand-light/15 blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute top-1/2 -right-32 h-[28rem] w-[28rem] rounded-full bg-yellow/10 blur-3xl"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 md:pt-24 md:pb-32 grid lg:grid-cols-12 gap-12 items-center">
+      <!-- Copy column -->
+      <div class="lg:col-span-7 reveal-stagger">
+        <span class="inline-flex items-center gap-2 bg-white/10 border border-white/15 backdrop-blur rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide">
+          <span class="relative inline-flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full rounded-full bg-yellow animate-ping opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-yellow"></span>
+          </span>
+          Vale do Paraíba · SP
+        </span>
+        <h1 class="mt-6 font-display font-extrabold text-5xl sm:text-6xl md:text-7xl leading-[1.02]">
+          Funcionário sumiu?<br />
+          <span class="text-yellow">Chamou,</span>
+          <span class="brush text-brand-darkest">trampei.</span>
+        </h1>
+        <p class="mt-7 text-lg md:text-xl text-cream/85 max-w-2xl">
+          A primeira plataforma do Vale do Paraíba que conecta sua empresa a trabalhadores
+          disponíveis em tempo real, com inteligência artificial. Match em minutos. Sem
+          agência, sem taxa escondida.
+        </p>
+        <div class="mt-9 flex flex-col sm:flex-row gap-3">
+          <a href="#planos" class="inline-flex items-center justify-center gap-2 bg-yellow text-brand-darkest font-bold px-7 py-4 rounded-full shadow-pill hover:-translate-y-0.5 hover:shadow-pill transition-all">
+            Garantir vaga na pré-venda <span aria-hidden="true">→</span>
+          </a>
+          <a href="#como-funciona" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/15 text-cream font-semibold px-7 py-4 rounded-full backdrop-blur transition-colors">
+            Ver como funciona
+          </a>
+        </div>
+        <div class="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-cream/80">
+          <span class="inline-flex items-center gap-2"><span class="text-yellow">✓</span> Sem instalação</span>
+          <span class="inline-flex items-center gap-2"><span class="text-yellow">✓</span> Funciona pelo WhatsApp</span>
+          <span class="inline-flex items-center gap-2"><span class="text-yellow">✓</span> Cancele quando quiser</span>
+        </div>
+      </div>
+
+      <!-- Mockup column -->
+      <div class="lg:col-span-5 relative reveal">
+        <div class="relative max-w-[300px] mx-auto animate-float">
+          <!-- Phone frame -->
+          <div class="phone-frame aspect-[9/19] p-3">
+            <div class="bg-off rounded-3xl h-full overflow-hidden flex flex-col">
+              <!-- App header -->
+              <div class="bg-brand-darkest text-cream px-4 py-3 flex items-center justify-between">
+                <span class="font-display font-extrabold text-lg">TRAMPEI</span>
+                <span class="text-xs bg-yellow text-brand-darkest font-bold px-2 py-0.5 rounded-full">ONLINE</span>
+              </div>
+              <!-- Vaga summary -->
+              <div class="px-4 py-3 border-b border-ink/5">
+                <p class="text-xs text-ink-light uppercase tracking-wider font-semibold">Sua vaga</p>
+                <p class="text-sm font-bold text-ink mt-0.5">Auxiliar de cozinha · hoje 19h</p>
+              </div>
+              <!-- Worker cards -->
+              <div class="flex-1 px-3 py-3 space-y-2.5">
+                <p class="text-[10px] text-ink-light uppercase tracking-wider font-semibold px-1">Trampistas disponíveis</p>
+                <div class="bg-white rounded-xl p-3 shadow-card flex items-center gap-3">
+                  <div class="h-9 w-9 rounded-full bg-brand-light/30 flex items-center justify-center font-bold text-brand-darkest text-sm">JL</div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold truncate">João L.</p>
+                    <p class="text-[11px] text-ink-mid">Auxiliar de cozinha · 1,2 km</p>
+                  </div>
+                  <span class="text-xs font-bold text-brand">★ 4.9</span>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-card flex items-center gap-3">
+                  <div class="h-9 w-9 rounded-full bg-yellow/30 flex items-center justify-center font-bold text-brand-darkest text-sm">MC</div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold truncate">Maria C.</p>
+                    <p class="text-[11px] text-ink-mid">Atendente · 800 m</p>
+                  </div>
+                  <span class="text-xs font-bold text-brand">★ 4.8</span>
+                </div>
+                <div class="bg-brand-darkest text-cream rounded-xl p-3 flex items-center gap-3">
+                  <span class="pulse-ring inline-flex h-2 w-2 rounded-full bg-yellow"></span>
+                  <p class="text-[11px] flex-1">Match encontrado · resposta &lt; 5min</p>
+                </div>
+              </div>
+              <!-- CTA -->
+              <div class="p-3">
+                <button class="w-full bg-yellow text-brand-darkest font-bold py-3 rounded-xl text-sm shadow-pill">Chamar agora</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating badges -->
+          <div class="absolute -top-4 -right-4 bg-white rounded-2xl shadow-card-hover px-4 py-3 text-ink">
+            <p class="text-[10px] uppercase tracking-wider text-ink-light font-semibold">Tempo médio</p>
+            <p class="font-display font-extrabold text-2xl text-brand-darkest tabular">&lt; 5min</p>
+          </div>
+          <div class="absolute -bottom-6 -left-6 bg-brand-darkest text-cream rounded-2xl shadow-card-hover px-4 py-3 border-l-4 border-yellow">
+            <p class="text-[10px] uppercase tracking-wider text-brand-bright/80 font-semibold">IA matching</p>
+            <p class="font-bold text-sm">Aprende a cada trampo</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 4: MARQUEE DE SETORES ===== -->
+  <section class="bg-white border-y border-ink/5 py-6 overflow-hidden">
+    <p class="text-center text-[11px] uppercase tracking-[0.2em] text-ink-light font-semibold mb-4">Setores atendidos no lançamento</p>
+    <div class="relative">
+      <div class="flex animate-marquee gap-8 whitespace-nowrap">
+        <!-- Two identical groups for seamless loop -->
+        <div class="flex gap-8 shrink-0">
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🍞 Padarias</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🍕 Pizzarias</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🍔 Hamburguerias</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🍽️ Restaurantes</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🛒 Supermercados</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🎉 Eventos</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🏗️ Construção</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🚚 Logística</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🧰 Serviços gerais</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+        </div>
+        <div class="flex gap-8 shrink-0" aria-hidden="true">
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🍞 Padarias</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🍕 Pizzarias</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🍔 Hamburguerias</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🍽️ Restaurantes</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🛒 Supermercados</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🎉 Eventos</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🏗️ Construção</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🚚 Logística</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">🧰 Serviços gerais</span>
+          <span class="font-display font-extrabold text-2xl md:text-3xl text-brand">·</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 5: O PROBLEMA ===== -->
+  <section id="problema" class="bg-off py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-16 reveal">
+        <p class="text-xs uppercase tracking-[0.2em] text-ink-mid font-semibold mb-4">O problema real</p>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight">
+          Quem trampeia de verdade<br />
+          conhece <span class="brush">essa dor.</span>
+        </h2>
+        <p class="mt-5 text-lg text-ink-mid">
+          Você não tá sozinho. Todo dia, milhares de logistas perdem dinheiro porque
+          não acharam quem precisava na hora.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5 reveal-stagger">
+        <div class="bg-white rounded-2xl border-l-4 border-yellow shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all p-7">
+          <span class="text-3xl">😤</span>
+          <h3 class="font-display font-bold text-xl mt-4 mb-2">Sexta à noite, equipe furou.</h3>
+          <p class="text-ink-mid leading-relaxed">Sua melhor atendente liga 30 minutos antes do turno: "não vou conseguir ir hoje." E agora? Você fecha o salão?</p>
+        </div>
+        <div class="bg-white rounded-2xl border-l-4 border-yellow shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all p-7">
+          <span class="text-3xl">📞</span>
+          <h3 class="font-display font-bold text-xl mt-4 mb-2">Pedido grande, equipe pequena.</h3>
+          <p class="text-ink-mid leading-relaxed">Encomenda de 50 marmitas pra amanhã. Sua cozinha não dá conta. Vai recusar a venda?</p>
+        </div>
+        <div class="bg-white rounded-2xl border-l-4 border-yellow shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all p-7">
+          <span class="text-3xl">💸</span>
+          <h3 class="font-display font-bold text-xl mt-4 mb-2">Agência cara, espera longa.</h3>
+          <p class="text-ink-mid leading-relaxed">Você liga, eles cobram taxa absurda, mandam alguém em 2 dias. O cliente já foi pra concorrência.</p>
+        </div>
+        <div class="bg-white rounded-2xl border-l-4 border-yellow shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all p-7">
+          <span class="text-3xl">📱</span>
+          <h3 class="font-display font-bold text-xl mt-4 mb-2">Boca a boca não escala.</h3>
+          <p class="text-ink-mid leading-relaxed">Pedir indicação em grupo de WhatsApp toda hora é cansativo. E quase nunca aparece quem você precisa.</p>
+        </div>
+      </div>
+
+      <!-- Anchor phrase -->
+      <div class="mt-12 relative overflow-hidden bg-brand-darkest text-cream rounded-3xl p-8 md:p-12 stripes-yellow reveal">
+        <p class="font-display text-2xl md:text-3xl leading-tight">
+          <span class="text-yellow font-extrabold">"A verdade é simples:"</span>
+          <span class="text-cream">sua operação não pode parar porque alguém faltou. E pagar agência ou perder venda também não é opção.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 6: COMO FUNCIONA ===== -->
+  <section id="como-funciona" class="bg-white py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-16 reveal">
+        <p class="text-xs uppercase tracking-[0.2em] text-ink-mid font-semibold mb-4">Como funciona</p>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight">
+          A TRAMPEI resolve em<br />
+          <span class="brush brush-lime">3 passos.</span> Sério.
+        </h2>
+        <p class="mt-5 text-lg text-ink-mid">
+          Da publicação ao trampista chegando no seu balcão: questão de minutos.
+        </p>
+      </div>
+
+      <div class="relative grid md:grid-cols-3 gap-6 reveal-stagger">
+        <!-- Connector line (desktop only) -->
+        <div aria-hidden="true" class="hidden md:block absolute top-12 left-[16.66%] right-[16.66%] h-0.5 border-t-2 border-dashed border-brand-light/40"></div>
+
+        <div class="relative bg-off rounded-3xl p-7 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <div class="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-yellow text-brand-darkest font-display font-extrabold text-xl shadow-pill">01</div>
+          <h3 class="font-display font-bold text-xl mt-5 mb-2">Publica a vaga</h3>
+          <p class="text-ink-mid leading-relaxed">Diz qual função, quando e onde. Pelo WhatsApp ou app. Em 30 segundos.</p>
+        </div>
+        <div class="relative bg-off rounded-3xl p-7 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <div class="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-yellow text-brand-darkest font-display font-extrabold text-xl shadow-pill">02</div>
+          <h3 class="font-display font-bold text-xl mt-5 mb-2">A IA encontra</h3>
+          <p class="text-ink-mid leading-relaxed">Nossa inteligência cruza perfil, localização, horário e reputação. Te entrega os melhores trampistas disponíveis.</p>
+        </div>
+        <div class="relative bg-off rounded-3xl p-7 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <div class="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-yellow text-brand-darkest font-display font-extrabold text-xl shadow-pill">03</div>
+          <h3 class="font-display font-bold text-xl mt-5 mb-2">Trampista no local</h3>
+          <p class="text-ink-mid leading-relaxed">Você confirma, ele aparece, trabalho feito. Pagamento direto, com 10% retido pra plataforma.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 6.5: MODALIDADES (Freela / Diária / Fixa — Disposição para Trabalho) ===== -->
+  <section id="modalidades" class="bg-off py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-16 reveal">
+        <p class="text-xs uppercase tracking-[0.2em] text-ink-mid font-semibold mb-4">Três modalidades</p>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight">
+          Não é só freela.<br />
+          Também é <span class="brush">vaga fixa.</span>
+        </h2>
+        <p class="mt-5 text-lg text-ink-mid">
+          Chamou pra um trampo de emergência, contratou pra um turno avulso ou recrutou
+          pra vaga fixa — tudo na mesma plataforma.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5 items-stretch reveal-stagger">
+        <div class="bg-white rounded-3xl border-t-4 border-yellow shadow-card p-7 hover:shadow-card-hover hover:-translate-y-1 transition-all flex flex-col">
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold">Modalidade</p>
+          <h3 class="font-display font-extrabold text-2xl mt-1">Freela</h3>
+          <p class="text-ink-mid mt-3 leading-relaxed flex-1">Trampo pontual, com urgência. Funcionário sumiu, pedido grande chegou. Match em minutos, trampista no local.</p>
+          <p class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-brand"><span class="h-1.5 w-1.5 rounded-full bg-brand-light"></span> Ideal pra imprevisto</p>
+        </div>
+        <div class="bg-white rounded-3xl border-t-4 border-brand-light shadow-card p-7 hover:shadow-card-hover hover:-translate-y-1 transition-all flex flex-col">
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold">Modalidade</p>
+          <h3 class="font-display font-extrabold text-2xl mt-1">Diária</h3>
+          <p class="text-ink-mid mt-3 leading-relaxed flex-1">Turno avulso, evento de fim de semana, demanda sazonal. Combina o dia, fecha o trampo, sem amarração.</p>
+          <p class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-brand"><span class="h-1.5 w-1.5 rounded-full bg-brand-light"></span> Ideal pra pico de demanda</p>
+        </div>
+        <div class="relative bg-brand-darkest text-cream rounded-3xl border-t-4 border-yellow shadow-card p-7 hover:shadow-card-hover hover:-translate-y-1 transition-all flex flex-col">
+          <span class="absolute -top-3 right-5 inline-flex items-center bg-yellow text-brand-darkest text-[10px] font-bold tracking-wider px-3 py-1 rounded-full shadow-pill">NOVO</span>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-yellow font-semibold">Disposição para Trabalho</p>
+          <h3 class="font-display font-extrabold text-2xl mt-1 text-cream">Fixa</h3>
+          <p class="text-cream/85 mt-3 leading-relaxed flex-1">Vaga permanente. Trampistas escolhem área de atuação e deixam o perfil como currículo. A TRAMPEI encaminha pra empresas parceiras que estão contratando.</p>
+          <p class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-yellow"><span class="h-1.5 w-1.5 rounded-full bg-yellow"></span> Banco de currículos curado</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 7: VANTAGENS ===== -->
+  <section class="relative overflow-hidden bg-cream py-24 md:py-32">
+    <div aria-hidden="true" class="pointer-events-none absolute -top-40 -right-40 h-96 w-96 rounded-full bg-yellow/20 blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-brand-light/20 blur-3xl"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-16 reveal">
+        <p class="text-xs uppercase tracking-[0.2em] text-ink-mid font-semibold mb-4">Vantagens</p>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight">
+          Construído pra quem<br />
+          <span class="brush">não pode esperar.</span>
+        </h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-5 reveal-stagger">
+        <div class="bg-white rounded-2xl p-7 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <div class="h-12 w-12 rounded-xl bg-yellow/20 flex items-center justify-center text-2xl">⚡</div>
+          <h3 class="font-display font-bold text-lg mt-5 mb-2">Match em minutos</h3>
+          <p class="text-ink-mid text-sm leading-relaxed">Da publicação ao trampista chegando: questão de minutos. Não de dias.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <div class="h-12 w-12 rounded-xl bg-brand-light/20 flex items-center justify-center text-2xl">🧠</div>
+          <h3 class="font-display font-bold text-lg mt-5 mb-2">IA que aprende</h3>
+          <p class="text-ink-mid text-sm leading-relaxed">A cada match, a inteligência fica mais precisa. Você só recebe quem performa.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <div class="h-12 w-12 rounded-xl bg-yellow/20 flex items-center justify-center text-2xl">⭐</div>
+          <h3 class="font-display font-bold text-lg mt-5 mb-2">Avaliação mútua</h3>
+          <p class="text-ink-mid text-sm leading-relaxed">Sistema estilo Uber. Quem trabalha bem ganha mais oportunidades. Quem paga bem atrai os melhores.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <div class="h-12 w-12 rounded-xl bg-brand-light/20 flex items-center justify-center text-2xl">💰</div>
+          <h3 class="font-display font-bold text-lg mt-5 mb-2">Sem taxa escondida</h3>
+          <p class="text-ink-mid text-sm leading-relaxed">Mensalidade fixa + 10% por contratação. Só isso. Sem agência, sem surpresa.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <div class="h-12 w-12 rounded-xl bg-yellow/20 flex items-center justify-center text-2xl">📱</div>
+          <h3 class="font-display font-bold text-lg mt-5 mb-2">Funciona no WhatsApp</h3>
+          <p class="text-ink-mid text-sm leading-relaxed">Onde sua operação já roda. Sem precisar baixar mais um app pra equipe.</p>
+        </div>
+        <div class="bg-white rounded-2xl p-7 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <div class="h-12 w-12 rounded-xl bg-brand-light/20 flex items-center justify-center text-2xl">🛡️</div>
+          <h3 class="font-display font-bold text-lg mt-5 mb-2">Trampista verificado</h3>
+          <p class="text-ink-mid text-sm leading-relaxed">Documentação validada, histórico visível, reputação construída. Você sabe quem tá entrando.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 8: REPUTAÇÃO ===== -->
+  <section class="relative overflow-hidden bg-brand-darkest text-cream py-24 md:py-32 grain">
+    <div aria-hidden="true" class="pointer-events-none absolute top-20 -left-32 h-96 w-96 rounded-full bg-brand-light/15 blur-3xl"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-12 items-start">
+        <div class="lg:col-span-7 reveal-stagger">
+          <p class="text-xs uppercase tracking-[0.3em] text-yellow font-semibold mb-4">Reputação que abre portas</p>
+          <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight text-yellow">
+            Aqui, quem trampeia<br />
+            bem é recompensado.
+          </h2>
+          <p class="mt-6 text-lg text-cream/80 max-w-2xl">
+            Reputação é a chave. Trampistas com melhor avaliação aparecem primeiro nas
+            vagas premium. Empresas que pagam em dia e tratam bem atraem os top performers.
+            É meritocracia pura.
+          </p>
+
+          <div class="mt-10 grid sm:grid-cols-2 gap-4">
+            <div class="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+              <p class="text-yellow font-display font-extrabold text-2xl">★ Trampistas TOP <span class="text-cream/60 text-base font-bold">(4.8★+)</span></p>
+              <p class="text-cream/80 text-sm mt-2 leading-relaxed">Aparecem primeiro nas vagas, têm prioridade da IA, podem cobrar tarifas premium.</p>
+            </div>
+            <div class="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+              <p class="text-yellow font-display font-extrabold text-2xl">↑ Construção de histórico</p>
+              <p class="text-cream/80 text-sm mt-2 leading-relaxed">Cada trampo bem feito sobe sua reputação. Cada calote derruba. Sem invenção.</p>
+            </div>
+          </div>
+
+          <p class="mt-8 text-sm text-cream/70 italic max-w-2xl">
+            Se dois logistas precisam do mesmo trampista ao mesmo tempo, o plano <span class="text-yellow font-bold not-italic">PRO</span> tem prioridade sobre o <span class="text-cream font-bold not-italic">BÁSICO</span>. O sistema garante que os melhores trampistas aparecem primeiro pra quem investe mais.
+          </p>
+        </div>
+
+        <div class="lg:col-span-5 grid gap-4 reveal">
+          <!-- Worker rates contractor -->
+          <div class="bg-white text-ink rounded-2xl p-6 shadow-card-hover">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold">Trabalhador avalia</p>
+            <p class="font-display font-extrabold text-lg mt-1">Contratante</p>
+            <div class="mt-2 text-yellow text-lg">★ ★ ★ ★ ★</div>
+            <ul class="mt-3 space-y-1.5 text-sm text-ink-mid">
+              <li class="flex gap-2"><span class="text-brand">✓</span> Pagamento pontual</li>
+              <li class="flex gap-2"><span class="text-brand">✓</span> Ambiente de trabalho</li>
+              <li class="flex gap-2"><span class="text-brand">✓</span> Tratamento e respeito</li>
+            </ul>
+          </div>
+          <!-- Contractor rates worker -->
+          <div class="bg-yellow text-brand-darkest rounded-2xl p-6 shadow-card-hover">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-brand-darkest/70 font-semibold">Contratante avalia</p>
+            <p class="font-display font-extrabold text-lg mt-1">Trabalhador</p>
+            <div class="mt-2 text-brand-darkest text-lg">★ ★ ★ ★ ★</div>
+            <ul class="mt-3 space-y-1.5 text-sm text-brand-darkest/80">
+              <li class="flex gap-2"><span>✓</span> Pontualidade</li>
+              <li class="flex gap-2"><span>✓</span> Qualidade do serviço</li>
+              <li class="flex gap-2"><span>✓</span> Postura profissional</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 9: NÚMEROS ===== -->
+  <section class="bg-off py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-16 reveal">
+        <p class="text-xs uppercase tracking-[0.2em] text-ink-mid font-semibold mb-4">Começando pelo Vale</p>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight">
+          A TRAMPEI nasce<br />
+          com <span class="brush">base sólida.</span>
+        </h2>
+        <p class="mt-5 text-lg text-ink-mid">
+          Operação inicial em Taubaté, Pindamonhangaba, Caçapava e Tremembé.
+          Expansão pelo estado de SP em fases seguintes.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-5 reveal-stagger">
+        <div class="bg-white rounded-2xl border-t-4 border-yellow shadow-card p-7 hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <p class="font-display font-extrabold text-4xl md:text-5xl text-brand-darkest tabular">+31,9k</p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold mt-3">Trabalhadores</p>
+          <p class="text-sm text-ink-mid mt-1">potenciais na região</p>
+        </div>
+        <div class="bg-white rounded-2xl border-t-4 border-yellow shadow-card p-7 hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <p class="font-display font-extrabold text-4xl md:text-5xl text-brand-darkest tabular">9</p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold mt-3">Setores</p>
+          <p class="text-sm text-ink-mid mt-1">do comércio à logística</p>
+        </div>
+        <div class="bg-white rounded-2xl border-t-4 border-yellow shadow-card p-7 hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <p class="font-display font-extrabold text-4xl md:text-5xl text-brand-darkest tabular">&lt; 5min</p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold mt-3">Match médio</p>
+          <p class="text-sm text-ink-mid mt-1">da publicação ao contato</p>
+        </div>
+        <div class="bg-white rounded-2xl border-t-4 border-yellow shadow-card p-7 hover:shadow-card-hover hover:-translate-y-1 transition-all">
+          <p class="font-display font-extrabold text-4xl md:text-5xl text-brand-darkest tabular">24/7</p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold mt-3">Operação</p>
+          <p class="text-sm text-ink-mid mt-1">trampista pronto a qualquer hora</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 10: MODELO COMERCIAL ===== -->
+  <section class="bg-white py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-14 reveal">
+        <p class="text-xs uppercase tracking-[0.2em] text-ink-mid font-semibold mb-4">Modelo comercial</p>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight">
+          Cobrança simples<br />
+          e sem <span class="brush">letrinha pequena.</span>
+        </h2>
+        <p class="mt-5 text-lg text-ink-mid">
+          Você paga uma mensalidade fixa pelo acesso + 10% por contratação. A comissão é
+          descontada do trampista no ato do pagamento — você só processa.
+        </p>
+      </div>
+
+      <!-- Flow explanation -->
+      <div class="mb-10 bg-cream rounded-3xl p-6 md:p-8 reveal">
+        <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold mb-4">Como o dinheiro circula</p>
+        <ol class="grid md:grid-cols-3 gap-4 text-sm">
+          <li class="flex gap-3"><span class="flex-shrink-0 h-7 w-7 rounded-full bg-brand text-cream font-bold flex items-center justify-center text-xs">1</span><span><strong class="text-ink">Trampista recebe</strong> o combinado, MENOS os 10%.</span></li>
+          <li class="flex gap-3"><span class="flex-shrink-0 h-7 w-7 rounded-full bg-brand text-cream font-bold flex items-center justify-center text-xs">2</span><span><strong class="text-ink">Empresário retém</strong> esses 10% no ato do pagamento.</span></li>
+          <li class="flex gap-3"><span class="flex-shrink-0 h-7 w-7 rounded-full bg-brand text-cream font-bold flex items-center justify-center text-xs">3</span><span><strong class="text-ink">Empresário repassa</strong> pra TRAMPEI: mensalidade + 10% retidos.</span></li>
+        </ol>
+        <p class="mt-5 text-xs text-ink-light italic">O trampista nunca tem relação financeira direta com a TRAMPEI.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5 reveal-stagger">
+        <div class="bg-off rounded-3xl border-t-4 border-yellow p-8 md:p-10 shadow-card">
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold">Comissão por contratação</p>
+          <p class="font-display font-extrabold text-7xl text-brand-darkest tabular mt-3">10%</p>
+          <p class="text-ink-mid mt-3">sobre cada contratação, independente do valor.</p>
+          <p class="mt-4 text-sm italic text-ink-light">Descontada pelo empresário do pagamento ao trampista.</p>
+        </div>
+        <div class="bg-brand-darkest text-cream rounded-3xl border-t-4 border-yellow p-8 md:p-10 shadow-card">
+          <p class="text-[10px] uppercase tracking-[0.2em] text-yellow font-semibold">Assinatura mensal</p>
+          <div class="mt-3 flex items-center gap-3">
+            <div class="h-12 w-12 rounded-xl bg-yellow/20 flex items-center justify-center text-yellow text-2xl">📅</div>
+            <p class="font-display font-extrabold text-3xl">Mensalidade</p>
+          </div>
+          <p class="mt-2 italic text-cream/70 text-sm">paga pelo contratante</p>
+          <p class="mt-4 text-cream/85 leading-relaxed">
+            Plano de acesso à plataforma, à base de trampistas e às ferramentas de
+            gestão. Cancele quando quiser.
+          </p>
+        </div>
+      </div>
+
+      <!-- Trampista referral commission -->
+      <div class="mt-6 relative overflow-hidden bg-yellow rounded-3xl p-8 md:p-10 shadow-card reveal stripes-darken">
+        <div class="relative flex items-start gap-5 flex-col md:flex-row">
+          <div class="h-14 w-14 rounded-2xl bg-brand-darkest text-yellow flex items-center justify-center text-2xl flex-shrink-0">🤝</div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-brand-darkest/70 font-semibold">Comissão pro trampista que vende</p>
+            <h3 class="font-display font-extrabold text-2xl md:text-3xl mt-1 leading-tight text-brand-darkest">A primeira mensalidade vai 100% pro trampista que fechou.</h3>
+            <p class="mt-3 text-brand-darkest/85 leading-relaxed max-w-3xl">
+              Trampista que apresenta a TRAMPEI pra um empresário local e fecha a venda do plano leva a <strong>primeira parcela inteira</strong> como comissão. Do segundo mês em diante, a mensalidade segue o fluxo normal. É como a gente premia quem ajuda o Vale a trampear.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 11: PLANOS ===== -->
+  <section id="planos" class="relative overflow-hidden bg-cream py-24 md:py-32">
+    <div aria-hidden="true" class="pointer-events-none absolute top-20 -right-40 h-96 w-96 rounded-full bg-yellow/20 blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute bottom-20 -left-40 h-96 w-96 rounded-full bg-brand-light/20 blur-3xl"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-14 reveal">
+        <span class="inline-flex items-center gap-2 bg-yellow text-brand-darkest rounded-full px-4 py-2 text-xs font-bold tracking-wide shadow-pill mb-5">
+          <span class="relative inline-flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full rounded-full bg-brand-darkest animate-ping opacity-60"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-brand-darkest"></span>
+          </span>
+          PRÉ-VENDA · 50% OFF NOS 3 PRIMEIROS MESES
+        </span>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight">
+          Escolha seu plano.<br />
+          Pague <span class="brush brush-lime">metade.</span>
+        </h2>
+        <p class="mt-5 text-lg text-ink-mid">
+          Trave preço promocional agora. Aplica nos 3 primeiros meses após o lançamento.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5 items-end reveal-stagger">
+        <!-- BÁSICO -->
+        <div class="bg-white rounded-3xl border-t-4 border-brand-light shadow-card p-7 flex flex-col">
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold">Plano</p>
+          <h3 class="font-display font-extrabold text-2xl mt-1">Básico</h3>
+          <p class="text-ink-mid text-sm mt-1">Para começar a usar a TRAMPEI.</p>
+          <div class="mt-6 flex items-baseline gap-2">
+            <span class="text-ink-light line-through tabular">R$ 99</span>
+            <span class="font-display font-extrabold text-5xl tabular">R$ 49</span>
+            <span class="text-ink-mid">/mês</span>
+          </div>
+          <p class="text-xs text-ink-light mt-1">nos 3 primeiros meses</p>
+          <ul class="mt-6 space-y-2.5 text-sm flex-1">
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> 1 contratação por mês</li>
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> Acesso à base de trampistas</li>
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> Sistema de avaliação mútua</li>
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> Suporte por WhatsApp</li>
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> Histórico de contratações</li>
+          </ul>
+          <button data-plan="basico" class="js-pick-plan mt-7 bg-brand-darkest text-cream font-bold py-3.5 rounded-full hover:-translate-y-0.5 transition-transform">Garantir Básico</button>
+        </div>
+
+        <!-- PRO (recommended, raised) -->
+        <div class="relative md:-mt-6 bg-white rounded-3xl border-t-4 border-yellow ring-2 ring-yellow shadow-card-hover p-7 flex flex-col">
+          <span class="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 bg-yellow text-brand-darkest font-bold text-xs px-4 py-1.5 rounded-full shadow-pill">RECOMENDADO</span>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold">Plano</p>
+          <h3 class="font-display font-extrabold text-2xl mt-1">Pro</h3>
+          <p class="text-ink-mid text-sm mt-1">Para quem precisa de gente sempre.</p>
+          <div class="mt-6 flex items-baseline gap-2">
+            <span class="text-ink-light line-through tabular">R$ 297</span>
+            <span class="font-display font-extrabold text-5xl tabular">R$ 147</span>
+            <span class="text-ink-mid">/mês</span>
+          </div>
+          <p class="text-xs text-ink-light mt-1">nos 3 primeiros meses</p>
+          <ul class="mt-6 space-y-2.5 text-sm flex-1">
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> Contratações ilimitadas</li>
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> Chamadas ilimitadas</li>
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> Prioridade na fila de trampistas</li>
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> Suporte prioritário</li>
+            <li class="flex gap-2"><span class="text-brand font-bold">✓</span> Tudo do Básico incluído</li>
+          </ul>
+          <button data-plan="pro" class="js-pick-plan mt-7 bg-yellow text-brand-darkest font-bold py-3.5 rounded-full shadow-pill hover:-translate-y-0.5 transition-transform">Garantir Pro →</button>
+        </div>
+
+        <!-- PREMIERE (dark) -->
+        <div class="bg-brand-darkest text-cream rounded-3xl border-t-4 border-yellow shadow-card p-7 flex flex-col">
+          <p class="text-[10px] uppercase tracking-[0.2em] text-brand-bright/60 font-semibold">Plano</p>
+          <h3 class="font-display font-extrabold text-2xl mt-1 text-cream">Premiere</h3>
+          <p class="text-brand-bright text-sm mt-1">Tudo do Pro + IA pra vender mais.</p>
+          <div class="mt-6 flex items-baseline gap-2">
+            <span class="text-brand-bright/60 line-through tabular">R$ 697</span>
+            <span class="font-display font-extrabold text-5xl tabular">R$ 347</span>
+            <span class="text-cream/70">/mês</span>
+          </div>
+          <p class="text-xs text-cream/60 mt-1">nos 3 primeiros meses</p>
+          <ul class="mt-6 space-y-2.5 text-sm flex-1">
+            <li class="flex gap-2"><span class="text-yellow font-bold">✓</span> Agente de IA SDR no WhatsApp</li>
+            <li class="flex gap-2"><span class="text-yellow font-bold">✓</span> Atendimento automático 24/7</li>
+            <li class="flex gap-2"><span class="text-yellow font-bold">✓</span> CRM integrado com funil de vendas</li>
+            <li class="flex gap-2"><span class="text-yellow font-bold">✓</span> Follow-up automatizado</li>
+            <li class="flex gap-2"><span class="text-yellow font-bold">✓</span> Tudo do Pro incluído</li>
+          </ul>
+          <button data-plan="premiere" class="js-pick-plan mt-7 bg-yellow text-brand-darkest font-bold py-3.5 rounded-full shadow-pill hover:-translate-y-0.5 transition-transform">Garantir Premiere →</button>
+        </div>
+      </div>
+
+      <p class="mt-10 text-center text-sm text-ink-mid">
+        Todos os planos incluem comissão de 10% por contratação · Cancele quando quiser · Sem fidelidade
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 12: FORMULÁRIO DE PRÉ-VENDA ===== -->
+  <section id="pre-venda" class="relative overflow-hidden bg-brand-darkest text-cream py-24 md:py-32 grain">
+    <div aria-hidden="true" class="pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full bg-brand-light/15 blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-yellow/10 blur-3xl"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-12 items-start">
+      <!-- Copy -->
+      <div class="lg:col-span-7 reveal-stagger">
+        <span class="inline-flex items-center gap-2 bg-yellow text-brand-darkest rounded-full px-4 py-2 text-xs font-bold tracking-wide shadow-pill">
+          <span class="relative inline-flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full rounded-full bg-brand-darkest animate-ping opacity-60"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-brand-darkest"></span>
+          </span>
+          VAGAS LIMITADAS
+        </span>
+        <h2 class="mt-5 font-display font-extrabold text-4xl md:text-5xl leading-tight">
+          Garanta seu plano com<br />
+          <span class="text-yellow">preço de fundador.</span>
+        </h2>
+        <p class="mt-5 text-lg text-cream/85 max-w-2xl">
+          Estamos abrindo as primeiras vagas pra logistas que querem prioridade no
+          lançamento. Você reserva agora, a gente entrega na data combinada. Atrasamos?
+          Você ganha meses grátis.
+        </p>
+
+        <ul class="mt-8 space-y-3 max-w-lg">
+          <li class="flex items-start gap-3">
+            <span class="flex-shrink-0 mt-0.5 h-6 w-6 rounded-full bg-yellow text-brand-darkest font-bold flex items-center justify-center text-xs">✓</span>
+            <span class="text-cream/90">50% de desconto nos 3 primeiros meses</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="flex-shrink-0 mt-0.5 h-6 w-6 rounded-full bg-yellow text-brand-darkest font-bold flex items-center justify-center text-xs">✓</span>
+            <span class="text-cream/90">Selo <strong class="text-yellow">Trampei Fundador</strong> no perfil</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="flex-shrink-0 mt-0.5 h-6 w-6 rounded-full bg-yellow text-brand-darkest font-bold flex items-center justify-center text-xs">✓</span>
+            <span class="text-cream/90">Onboarding direto com o time</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="flex-shrink-0 mt-0.5 h-6 w-6 rounded-full bg-yellow text-brand-darkest font-bold flex items-center justify-center text-xs">✓</span>
+            <span class="text-cream/90">Acesso antecipado a novas features</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="flex-shrink-0 mt-0.5 h-6 w-6 rounded-full bg-yellow text-brand-darkest font-bold flex items-center justify-center text-xs">✓</span>
+            <span class="text-cream/90"><strong>Garantia:</strong> 30 dias de devolução total após ativação</span>
+          </li>
+        </ul>
+
+        <!-- Progress bar of remaining spots -->
+        <div class="mt-10 bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-5 max-w-lg">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-yellow font-semibold">Vagas restantes</p>
+            <p class="font-display font-extrabold text-yellow tabular"><span id="spots">73</span> / 100</p>
+          </div>
+          <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full bg-yellow rounded-full" style="width: 73%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form card -->
+      <div class="lg:col-span-5 reveal">
+        <div class="bg-white text-ink rounded-3xl p-7 md:p-8 shadow-card-hover">
+          <p class="text-[10px] uppercase tracking-[0.2em] text-ink-light font-semibold">Reserve sua vaga</p>
+          <h3 class="font-display font-extrabold text-2xl mt-1">Vamos trampear juntos.</h3>
+
+          <form id="preSaleForm" class="mt-6 space-y-4" novalidate>
+            <div>
+              <label for="empresa" class="block text-xs font-bold uppercase tracking-wider text-ink-mid mb-1.5">Nome da empresa</label>
+              <input id="empresa" name="empresa" type="text" required placeholder="Ex: Padaria Pão Quente"
+                class="w-full bg-off border border-ink/10 rounded-xl px-4 py-3 text-sm focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/30 transition" />
+            </div>
+            <div>
+              <label for="nome" class="block text-xs font-bold uppercase tracking-wider text-ink-mid mb-1.5">Seu nome</label>
+              <input id="nome" name="nome" type="text" required placeholder="Como devemos te chamar?"
+                class="w-full bg-off border border-ink/10 rounded-xl px-4 py-3 text-sm focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/30 transition" />
+            </div>
+            <div>
+              <label for="whatsapp" class="block text-xs font-bold uppercase tracking-wider text-ink-mid mb-1.5">WhatsApp</label>
+              <input id="whatsapp" name="whatsapp" type="tel" required placeholder="(12) 9 9999-9999"
+                class="w-full bg-off border border-ink/10 rounded-xl px-4 py-3 text-sm focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/30 transition" />
+            </div>
+            <div>
+              <label for="plano" class="block text-xs font-bold uppercase tracking-wider text-ink-mid mb-1.5">Plano escolhido</label>
+              <select id="plano" name="plano" required
+                class="w-full bg-off border border-ink/10 rounded-xl px-4 py-3 text-sm focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/30 transition">
+                <option value="">Selecione…</option>
+                <option value="basico">Básico — R$ 49/mês</option>
+                <option value="pro">Pro — R$ 147/mês (recomendado)</option>
+                <option value="premiere">Premiere — R$ 347/mês</option>
+              </select>
+            </div>
+            <div>
+              <label for="cidade" class="block text-xs font-bold uppercase tracking-wider text-ink-mid mb-1.5">Cidade</label>
+              <select id="cidade" name="cidade" required
+                class="w-full bg-off border border-ink/10 rounded-xl px-4 py-3 text-sm focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand-light/30 transition">
+                <option value="">Selecione…</option>
+                <option value="taubate">Taubaté</option>
+                <option value="pinda">Pindamonhangaba</option>
+                <option value="cacapava">Caçapava</option>
+                <option value="tremembe">Tremembé</option>
+                <option value="outra">Outra</option>
+              </select>
+            </div>
+
+            <button type="submit" id="submitBtn"
+              class="w-full bg-yellow text-brand-darkest font-bold py-4 rounded-full shadow-pill hover:-translate-y-0.5 transition-transform disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0">
+              Quero garantir minha vaga →
+            </button>
+
+            <p class="text-xs text-ink-light text-center mt-3">
+              Você não paga nada agora. A primeira mensalidade só é cobrada na ativação.
+            </p>
+
+            <div id="formError" class="hidden bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3"></div>
+          </form>
+
+          <div id="formSuccess" class="hidden mt-6 bg-brand/10 border border-brand/20 text-brand-darkest rounded-2xl p-6 text-center">
+            <p class="text-3xl mb-2">🎉</p>
+            <p class="font-display font-extrabold text-xl">Vaga garantida!</p>
+            <p class="mt-2 text-sm text-ink-mid">Vamos te chamar no WhatsApp em até 24 horas.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 13: FAQ ===== -->
+  <section id="faq" class="bg-off py-24 md:py-32">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-14 reveal">
+        <p class="text-xs uppercase tracking-[0.2em] text-ink-mid font-semibold mb-4">Perguntas frequentes</p>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight">
+          Perguntas que <span class="brush">você tem</span>.
+        </h2>
+      </div>
+
+      <div class="space-y-3 reveal-stagger">
+        <!-- 1 -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">O que é a TRAMPEI?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            Plataforma que conecta empresas a trabalhadores disponíveis em tempo real, usando IA. Atende padarias, pizzarias, restaurantes, supermercados, eventos, construção e mais. Foco em resolver imprevistos de mão de obra em minutos.
+          </div>
+        </details>
+        <!-- 2 -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">Como funciona a pré-venda?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            Você escolhe um plano, preenche o formulário e garante o preço promocional. Não paga nada agora — a primeira mensalidade só é cobrada na ativação. Se a gente atrasar, você ganha meses grátis.
+          </div>
+        </details>
+        <!-- 3 -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">Quando o sistema vai estar disponível?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            <!-- TODO: substituir pela data real de lançamento -->
+            [INSERIR DATA DE LANÇAMENTO]. Vamos avisar com pelo menos 7 dias de antecedência pra você fazer o onboarding com o time TRAMPEI.
+          </div>
+        </details>
+        <!-- 4 -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">Como funciona a comissão de 10%?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            Toda contratação tem comissão de 10% sobre o valor do trampo. Você desconta no ato do pagamento ao trampista e repassa pra TRAMPEI junto com a mensalidade. O trampista recebe 90% do combinado. Você centraliza o financeiro.
+          </div>
+        </details>
+        <!-- 4b: trampista referral commission -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">Um trampista pode indicar minha empresa pra TRAMPEI?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            Pode, sim. Se um trampista cadastrar a sua empresa na plataforma e fechar a venda do plano com você, a <strong>primeira mensalidade fica integralmente com ele</strong> como comissão. É o jeito que a TRAMPEI tem pra premiar trampistas que ajudam a rede a crescer. Da segunda mensalidade em diante, o fluxo é o normal.
+          </div>
+        </details>
+        <!-- 5 -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">E se o trampista faltar?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            Você não paga pelo serviço não prestado. O trampista perde pontos na reputação e pode ser bloqueado. A IA prioriza trampistas com histórico de presença, então o risco cai a cada contratação.
+          </div>
+        </details>
+        <!-- 6 -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">Os trampistas têm vínculo CLT?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            Pra freela e diária: não — são profissionais autônomos cadastrados, cada contratação é pontual, sem vínculo empregatício. A TRAMPEI atua como intermediadora. Pra <strong>vaga fixa</strong>, veja a pergunta abaixo sobre a aba "Disposição para Trabalho".
+          </div>
+        </details>
+        <!-- 6b: Disposição para Trabalho -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">A TRAMPEI serve só pra freela ou também pra vaga fixa?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            Os dois. Além de freela e diária, temos a aba <strong>"Disposição para Trabalho"</strong>: trampistas que querem vaga fixa escolhem a área de atuação e deixam o perfil disponível como currículo dentro da plataforma. A TRAMPEI encaminha esses candidatos pra empresas parceiras que estão contratando. Você publica a vaga fixa pelo mesmo painel e a gente faz o match.
+          </div>
+        </details>
+        <!-- 7 -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">A TRAMPEI atende minha cidade?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            Operação inicial em Taubaté, Pindamonhangaba, Caçapava e Tremembé. Outras regiões entram em fases seguintes. Se você é de outra cidade, garante sua vaga — te avisamos quando expandirmos.
+          </div>
+        </details>
+        <!-- 8 -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">Posso cancelar quando quiser?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            Sim. Cancelamento em 1 clique, sem multa. Os primeiros 30 dias após o lançamento têm garantia total de devolução.
+          </div>
+        </details>
+        <!-- 9 -->
+        <details class="group bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-shadow">
+          <summary class="px-6 py-5 flex items-center justify-between gap-4">
+            <span class="font-display font-bold text-lg">Como é o suporte?</span>
+            <span class="chev text-brand text-2xl leading-none" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="px-6 pb-6 text-ink-mid leading-relaxed">
+            WhatsApp direto com o time em horário comercial pro Básico, prioritário pro Pro, dedicado VIP pro Premiere. Em momentos críticos (sexta à noite, falta de equipe), o time tá ativo.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 14: CTA FINAL ===== -->
+  <section class="bg-yellow stripes-darken relative overflow-hidden">
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center reveal">
+      <h2 class="font-display font-extrabold text-4xl md:text-6xl text-brand-darkest leading-[1.05]">
+        Sua operação merece<br />
+        gente pronta,<br />
+        <span class="italic">na hora certa.</span>
+      </h2>
+      <p class="mt-6 text-lg text-brand-darkest/80 max-w-2xl mx-auto">
+        Garanta sua vaga na pré-venda antes que esgotem. Os primeiros assinantes têm preço de fundador.
+      </p>
+      <a href="#pre-venda" class="mt-10 inline-flex items-center gap-2 bg-brand-darkest text-yellow font-bold px-10 py-5 rounded-full hover:-translate-y-0.5 hover:shadow-card-hover transition-all">
+        Quero entrar na pré-venda <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 15: FOOTER ===== -->
+  <footer class="bg-brand-darkest text-cream/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid md:grid-cols-12 gap-10">
+      <div class="md:col-span-5">
+        <div class="flex items-center gap-3">
+          <img src="logo.png" alt="TRAMPEI" class="h-12 w-12 rounded-lg object-cover" onerror="this.outerHTML='<div class=&quot;logo-fallback&quot;>T</div>';" />
+          <span class="font-display font-extrabold text-2xl text-cream">TRAMPEI</span>
+        </div>
+        <p class="mt-4 font-display font-bold text-yellow text-lg italic">"Chamou, trampei."</p>
+        <p class="mt-2 text-cream/70 text-sm">Trabalho rápido. Gente pronta. Vale do Paraíba, SP.</p>
+      </div>
+
+      <div class="md:col-span-3">
+        <p class="text-[10px] uppercase tracking-[0.2em] text-yellow font-semibold mb-4">Páginas</p>
+        <ul class="space-y-2.5 text-sm">
+          <li><a href="#problema" class="hover:text-cream transition-colors">O problema</a></li>
+          <li><a href="#como-funciona" class="hover:text-cream transition-colors">Como funciona</a></li>
+          <li><a href="#planos" class="hover:text-cream transition-colors">Planos</a></li>
+          <li><a href="#faq" class="hover:text-cream transition-colors">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-4">
+        <p class="text-[10px] uppercase tracking-[0.2em] text-yellow font-semibold mb-4">Contato</p>
+        <ul class="space-y-2.5 text-sm">
+          <!-- TODO: trocar contatos pelos reais -->
+          <li>📧 <a href="mailto:contato@trampei.com.br" class="hover:text-cream transition-colors">contato@trampei.com.br</a></li>
+          <li>📱 <a href="#" class="hover:text-cream transition-colors">@trampei</a></li>
+          <li>💬 WhatsApp: (12) 9 9999-9999</li>
+          <li>📍 Vale do Paraíba — SP</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-cream/60">
+        <p>© 2026 TRAMPEI. Todos os direitos reservados.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-cream transition-colors">Termos de uso</a>
+          <a href="#" class="hover:text-cream transition-colors">Política de privacidade</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // Reveal on scroll
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const els = document.querySelectorAll('.reveal, .reveal-stagger');
+      if (!('IntersectionObserver' in window) || reduce) {
+        els.forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            // Stagger children
+            if (el.classList.contains('reveal-stagger')) {
+              Array.from(el.children).forEach((child, i) => {
+                child.style.transitionDelay = `${i * 100}ms`;
+              });
+            }
+            el.classList.add('is-visible');
+            io.unobserve(el);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(el => io.observe(el));
+    })();
+
+    // Pre-fill plan when clicking plan card buttons
+    document.querySelectorAll('.js-pick-plan').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const plan = btn.dataset.plan;
+        const select = document.getElementById('plano');
+        if (select && plan) select.value = plan;
+        document.getElementById('pre-venda').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Form submit
+    const form = document.getElementById('preSaleForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formError = document.getElementById('formError');
+    const formSuccess = document.getElementById('formSuccess');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const data = {
+        empresa: form.empresa.value.trim(),
+        nome: form.nome.value.trim(),
+        whatsapp: form.whatsapp.value.trim(),
+        plano: form.plano.value,
+        cidade: form.cidade.value,
+      };
+
+      // Basic validation
+      for (const [k, v] of Object.entries(data)) {
+        if (!v) {
+          formError.textContent = `Preenche o campo: ${k}`;
+          formError.classList.remove('hidden');
+          return;
+        }
+      }
+
+      const originalLabel = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+
+      try {
+        // TODO: substituir pelo endpoint real do Formspree
+        const FORMSPREE_ENDPOINT = 'https://formspree.io/f/PLACEHOLDER';
+
+        if (FORMSPREE_ENDPOINT.includes('PLACEHOLDER')) {
+          // Local-dev fallback: log and show success
+          console.log('[TRAMPEI lead]', data);
+          await new Promise(r => setTimeout(r, 600));
+        } else {
+          const res = await fetch(FORMSPREE_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(data),
+          });
+          if (!res.ok) throw new Error('Falha no envio.');
+        }
+
+        form.classList.add('hidden');
+        formSuccess.classList.remove('hidden');
+      } catch (err) {
+        formError.textContent = 'Tivemos um problema pra enviar. Tenta de novo em alguns minutos.';
+        formError.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
+    });
+  </script>
+</body>
+</html>

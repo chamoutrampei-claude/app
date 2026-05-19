@@ -1,0 +1,50 @@
+# Source control
+.git
+.gitignore
+.gitattributes
+
+# Dependencies (re-installed inside the container)
+node_modules
+.pnpm-store
+
+# Build artifacts
+dist
+*.log
+
+# Local env files (use --env-file or platform secrets, never copy them in)
+.env
+.env.local
+.env.*.local
+
+# Dev/test runtime data
+.manus-logs
+.vite
+coverage
+
+# Editor & OS noise
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Project docs not needed at runtime
+*.md
+references
+patches
+
+# But keep these (override above)
+!README.md
+!DEPLOY.md
+
+# Tests aren't needed in the runtime image
+**/*.test.ts
+**/*.spec.ts
+vitest.config.ts
+
+# Other deployment artifacts
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Standalone landing (separate deploy)
+landing
