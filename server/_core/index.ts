@@ -28,9 +28,62 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
   throw new Error(`No available port found starting from ${startPort}`);
 }
 
+// Lista de origins autorizados a fazer chamadas cross-origin pra esta API.
+// Inclui:
+//   - capacitor://localhost / http://localhost  → WebView do app Android/iOS
+//     (o Capacitor expõe o conteúdo nesses schemes por padrão).
+//   - O domínio de produção pra quando o web SPA está num CDN separado.
+//   - localhost:5173/3000 pra desenvolvimento.
+// EXTRA_CORS_ORIGINS no env adiciona origins extras separados por vírgula
+// (útil pra previews do Vercel, branches do Railway, etc.).
+const STATIC_ALLOWED_ORIGINS = new Set<string>([
+  "capacitor://localhost",
+  "http://localhost",
+  "ionic://localhost",
+  "https://chamoutrampei.com.br",
+  "https://www.chamoutrampei.com.br",
+  "http://localhost:3000",
+  "http://localhost:5173",
+]);
+
+function isOriginAllowed(origin: string | undefined): origin is string {
+  if (!origin) return false;
+  if (STATIC_ALLOWED_ORIGINS.has(origin)) return true;
+  const extra = (process.env.EXTRA_CORS_ORIGINS ?? "").split(",").map((s) => s.trim());
+  return extra.includes(origin);
+}
+
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // CORS — habilitado pra origins conhecidos (apps Capacitor, dev local,
+  // produção). Credentials=true exigido porque a sessão usa cookies httpOnly.
+  // Mantemos um middleware manual em vez do pacote `cors` pra deixar a allowlist
+  // explícita no código (auditável e zero dependência extra).
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (isOriginAllowed(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+      res.setHeader("Vary", "Origin");
+    }
+    if (req.method === "OPTIONS") {
+      res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+      );
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization, X-Requested-With",
+      );
+      res.setHeader("Access-Control-Max-Age", "86400");
+      res.sendStatus(204);
+      return;
+    }
+    next();
+  });
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));

@@ -121,3 +121,28 @@ client/public/__manus__/version.json
 # Vite build cache
 .vite/
 node_modules/.vite/
+
+# === Capacitor / Android ===
+# Build outputs do app (regenerados a cada compilação)
+/android/app/build/
+/android/build/
+/android/.gradle/
+/android/captures/
+
+# Configuração local de SDK do Android (cada dev tem o seu)
+/android/local.properties
+
+# Arquivos do IntelliJ/Android Studio (preferências pessoais)
+/android/.idea/
+/android/*.iml
+/android/app/*.iml
+
+# Chaves de assinatura — NUNCA commitar
+*.jks
+*.keystore
+/android/app/key.properties
+
+# Synced web bundle (regerado por `pnpm build:android`)
+/android/app/src/main/assets/public/
+/android/app/src/main/assets/capacitor.config.json
+/android/app/src/main/assets/capacitor.plugins.json

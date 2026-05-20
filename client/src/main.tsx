@@ -37,10 +37,18 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
+// API base URL. Em dev/produção web ambos client e server estão no mesmo
+// origin, então usamos path relativo. Quando empacotado via Capacitor (Android/iOS),
+// o cliente fica no WebView em capacitor://localhost e precisa chamar o backend
+// num domínio absoluto — defina VITE_API_BASE_URL no build do app nativo
+// (ex: VITE_API_BASE_URL=https://chamoutrampei.com.br).
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+const TRPC_ENDPOINT = `${API_BASE}/api/trpc`;
+
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "/api/trpc",
+      url: TRPC_ENDPOINT,
       transformer: superjson,
       fetch(input, init) {
         return globalThis.fetch(input, {

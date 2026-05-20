@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Chamou, Trampei</string>
+    <string name="title_activity_main">Chamou, Trampei</string>
+    <string name="package_name">br.com.chamoutrampei.app</string>
+    <string name="custom_url_scheme">br.com.chamoutrampei.app</string>
+</resources>
