@@ -7,4 +7,8 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
+  // Senha mestra do dono pra entrar como admin enquanto OAuth real não
+  // está configurado. Use /api/admin-login?secret=<ADMIN_LOGIN_SECRET>
+  // (e troque esta variável quando configurar OAuth de verdade).
+  adminLoginSecret: process.env.ADMIN_LOGIN_SECRET ?? "",
 };
