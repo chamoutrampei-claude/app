@@ -30,11 +30,11 @@ Thumbs.db
 # Project docs not needed at runtime
 *.md
 references
-patches
 
 # But keep these (override above)
 !README.md
 !DEPLOY.md
+# patches/ is needed by pnpm at install time (patchedDependencies)
 
 # Tests aren't needed in the runtime image
 **/*.test.ts
