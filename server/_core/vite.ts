@@ -63,6 +63,19 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // Marketing landing servida no raiz "/". Usuários logados podem ir direto
+  // pra rotas do app (/login, /onboarding, /worker, /client, /admin). A landing
+  // não exige auth — é a página de venda. Quem clica em "Entrar/Acessar" no
+  // header da landing é levado pra /login da SPA React.
+  const landingIndex = path.resolve(distPath, "__landing", "index.html");
+  app.get("/", (_req, res, next) => {
+    if (fs.existsSync(landingIndex)) {
+      res.sendFile(landingIndex);
+    } else {
+      next();
+    }
+  });
+
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist
